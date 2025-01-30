@@ -249,7 +249,7 @@ function createIframeVisibilityCheckbox(iframe) {
     const container = document.createElement("div");
     container.appendChild(checkbox);
     container.appendChild(label);
-    Object.assign(checkbox.style, {
+    Object.assign(container.style, {
         display: "flex",
         gap: "4px",
         marginBottom: "6px",
