@@ -112,7 +112,14 @@ export class Test {
         secondDiv.appendChild(span);
 
         if (failed) {
-            console.log("innerTestResult", innerTestResult);
+            const objString = JSON.stringify(innerTestResult, null, 2); // Pretty-print with indentation
+
+            // Create a new element
+            const preTestResult = document.createElement("pre"); // Using <pre> for better readability
+            preTestResult.textContent = objString;
+
+            // Append to the body (or any other target)
+            document.body.appendChild(preTestResult);
 
             const failMessage: string = AnsiParser.removeAnsi(
                 innerTestResult.failureMessages[0]
