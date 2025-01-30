@@ -112,15 +112,6 @@ export class Test {
         secondDiv.appendChild(span);
 
         if (failed) {
-            const objString = JSON.stringify(innerTestResult, null, 2); // Pretty-print with indentation
-
-            // Create a new element
-            const preTestResult = document.createElement("pre"); // Using <pre> for better readability
-            preTestResult.textContent = objString;
-
-            // Append to the body (or any other target)
-            document.body.appendChild(preTestResult);
-
             const failMessage: string = AnsiParser.removeAnsi(
                 innerTestResult.failureMessages[0]
             );
@@ -177,6 +168,14 @@ export class Test {
             const code = document.createElement("code") as HTMLElement;
             pre.appendChild(code);
 
+            const iframe = createIframeForDOMSnapshot(
+                innerTestResult.domSnapshot
+            );
+            const iframeVisibilityCheckbox =
+                createIframeVisibilityCheckbox(iframe);
+            secondDiv.appendChild(iframeVisibilityCheckbox);
+            secondDiv.appendChild(iframe);
+
             failMessageSplit.forEach((entry, index) => {
                 const codeSpan = document.createElement(
                     "span"
@@ -200,4 +199,61 @@ export class Test {
 
         return firstDiv;
     }
+}
+
+function createIframeForDOMSnapshot(content: string) {
+    const iframe = document.createElement("iframe");
+
+    Object.assign(iframe.style, {
+        width: "100%",
+        height: "1100px",
+        border: "1px solid black",
+    });
+
+    iframe.onload = () => {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (doc) {
+            doc.open();
+            doc.write(content);
+            doc.close();
+        }
+    };
+
+    return iframe;
+}
+
+function createIframeVisibilityCheckbox(iframe) {
+    const checkboxId = `iframe-visibility"_${Math.random()
+        .toString(36)
+        .substring(7)}`;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = checkboxId;
+    checkbox.checked = true;
+    checkbox.addEventListener("change", (event) => {
+        const checked = (event.target as HTMLInputElement).checked;
+        iframe.style.display = checked ? "" : "none";
+    });
+    Object.assign(checkbox.style, {
+        cursor: "pointer",
+    });
+
+    const label = document.createElement("label");
+    label.htmlFor = checkboxId;
+    label.textContent = "Show DOM Snapshot";
+    Object.assign(label.style, {
+        cursor: "pointer",
+    });
+
+    const container = document.createElement("div");
+    container.appendChild(checkbox);
+    container.appendChild(label);
+    Object.assign(checkbox.style, {
+        display: "flex",
+        gap: "4px",
+        marginBottom: "6px",
+    });
+
+    return container;
 }

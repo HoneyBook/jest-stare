@@ -6,7 +6,9 @@ import { EnvVars } from "../processor/EnvVars";
 import { EnvVarService } from "../utils/EnvVarService";
 import { Config } from "@jest/types";
 import { AggregatedResult, TestResult } from "@jest/test-result";
-import { Test, ReporterOnStartOptions } from "@jest/reporters"
+import { Test, ReporterOnStartOptions } from "@jest/reporters";
+import * as fs from "fs";
+import * as path from "path";
 
 // import Test = jest.Test;
 // import ReporterOnStartOptions = Config.ReporterOnStartOptions;
@@ -17,7 +19,6 @@ import { Test, ReporterOnStartOptions } from "@jest/reporters"
  * @class Reporter
  */
 export class Reporter {
-
     /**
      * jest-stare configuration
      * @private
@@ -54,11 +55,13 @@ export class Reporter {
      * @param {*} mOptions - jest options in effect
      * @memberof Reporter
      */
-    constructor(public mGlobalConfig: Config.InitialOptions, private mOptions: IJestStareConfig) {
+    constructor(
+        public mGlobalConfig: Config.InitialOptions,
+        private mOptions: IJestStareConfig
+    ) {
         this.mEnvSrv = new EnvVarService(EnvVars.ENV_PREFIX);
         this.logger.on = this.mEnvSrv.readBoolEnvValue("LOG");
     }
-
 
     /**
      * Call for tests starting
@@ -66,11 +69,21 @@ export class Reporter {
      * @param {ReporterOnStartOptions} options - jest invoked options
      * @memberof Reporter
      */
-    public onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
+    public onRunStart(
+        results: AggregatedResult,
+        options: ReporterOnStartOptions
+    ) {
         // disallow results processors from a reporter invocation
-        if (Object.entries(this.mOptions).length === 0 && this.mOptions.constructor === Object) {
+        if (
+            Object.entries(this.mOptions).length === 0 &&
+            this.mOptions.constructor === Object
+        ) {
             // use jest-stare config from package.json
-            Processor.run(results, { additionalResultsProcessors: [], log: false }, { reporter: this });
+            Processor.run(
+                results,
+                { additionalResultsProcessors: [], log: false },
+                { reporter: this }
+            );
         } else {
             // use config through jest config
             this.mOptions.additionalResultsProcessors = [];
@@ -78,7 +91,12 @@ export class Reporter {
             this.mOptions.log = false;
             Processor.run(results, this.mOptions, { reporter: this });
         }
-        this.logger.info(Constants.LOGO + Constants.REPORTER_WRITTING + this.jestStareConfig.resultDir + Constants.SUFFIX);
+        this.logger.info(
+            Constants.LOGO +
+                Constants.REPORTER_WRITTING +
+                this.jestStareConfig.resultDir +
+                Constants.SUFFIX
+        );
     }
 
     /**
@@ -97,11 +115,32 @@ export class Reporter {
      * @param {AggregatedResult} aggregatedResult - jest summarized results
      * @memberof Reporter
      */
-    public onTestResult(test: Test, testResult: TestResult, results: AggregatedResult) {
+    public onTestResult(
+        test: Test,
+        testResult: TestResult,
+        results: AggregatedResult
+    ) {
+        const failedTests = testResult.testResults.filter(
+            (t) => t.status === "failed"
+        );
+        failedTests.forEach((failedTest) => {
+            failedTest.domSnapshot = getDOMSnapshot({
+                testPath: test.path,
+                testFullName: failedTest.fullName,
+            });
+        });
+
         // disallow results processors from a reporter invocation
-        if (Object.entries(this.mOptions).length === 0 && this.mOptions.constructor === Object) {
+        if (
+            Object.entries(this.mOptions).length === 0 &&
+            this.mOptions.constructor === Object
+        ) {
             // use jest-stare config from package.json
-            Processor.run(results, { additionalResultsProcessors: [], log: false }, { reporter: this });
+            Processor.run(
+                results,
+                { additionalResultsProcessors: [], log: false },
+                { reporter: this }
+            );
         } else {
             // use config through jest config
             this.mOptions.additionalResultsProcessors = [];
@@ -118,9 +157,16 @@ export class Reporter {
      */
     public onRunComplete(unused, results: AggregatedResult) {
         // disallow results processors from a reporter invocation
-        if (Object.entries(this.mOptions).length === 0 && this.mOptions.constructor === Object) {
+        if (
+            Object.entries(this.mOptions).length === 0 &&
+            this.mOptions.constructor === Object
+        ) {
             // use jest-stare config from package.json
-            Processor.run(results, { additionalResultsProcessors: [] }, { reporter: this });
+            Processor.run(
+                results,
+                { additionalResultsProcessors: [] },
+                { reporter: this }
+            );
         } else {
             // use config through jest config
             this.mOptions.additionalResultsProcessors = [];
@@ -167,4 +213,21 @@ export class Reporter {
         }
         return this.mLog;
     }
+}
+
+function getDOMSnapshot({ testPath, testFullName }) {
+    const fileName = testPath.split("/").pop();
+    const testId = `${fileName}__${testFullName}`;
+    const snapshotPath = path.join(__dirname, `${testId}.json`);
+
+    let data;
+    try {
+        data = JSON.parse(fs.readFileSync(snapshotPath, "utf8"));
+    } catch (e) {
+        console.error(
+            `[Jest Stare]: Error reading snapshot file: ${snapshotPath}`
+        );
+        return "";
+    }
+    return data?.domSnapshot || "";
 }
