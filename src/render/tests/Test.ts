@@ -10,7 +10,6 @@ import { TestResult } from "@jest/types";
  * @class Test
  */
 export class Test {
-
     /**
      * Add test to a section of the presented table
      * @static
@@ -19,7 +18,9 @@ export class Test {
      * @returns {HTMLDivElement} - populated element
      * @memberof Test
      */
-    public static create(innerTestResult: TestResult.AssertionResult): HTMLElement {
+    public static create(
+        innerTestResult: TestResult.AssertionResult
+    ): HTMLElement {
         let color = Constants.PASS_RAW;
         let testStatusClass = Constants.PASSED_TEST;
         let failed = false;
@@ -51,17 +52,37 @@ export class Test {
         img.classList.add("mr-2", "rounded");
         img.alt = "";
 
-        img.setAttribute("data-src", "holder.js/32x32?theme=thumb&bg=" + color + "&fg=" + color + "&size=1");
+        img.setAttribute(
+            "data-src",
+            "holder.js/32x32?theme=thumb&bg=" +
+                color +
+                "&fg=" +
+                color +
+                "&size=1"
+        );
 
         firstDiv.appendChild(img);
 
         const secondDiv = document.createElement("div") as HTMLDivElement;
-        secondDiv.classList.add("media-body", "pb-3", "mb-0", "small", "lh-125", "border-bottom", "overflow-auto");
+        secondDiv.classList.add(
+            "media-body",
+            "pb-3",
+            "mb-0",
+            "small",
+            "lh-125",
+            "border-bottom",
+            "overflow-auto"
+        );
 
         firstDiv.appendChild(secondDiv);
 
         const thirdDiv = document.createElement("div") as HTMLDivElement;
-        thirdDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "w-100");
+        thirdDiv.classList.add(
+            "d-flex",
+            "justify-content-between",
+            "align-items-center",
+            "w-100"
+        );
 
         secondDiv.appendChild(thirdDiv);
 
@@ -70,14 +91,17 @@ export class Test {
         strong.textContent = innerTestResult.title;
 
         // NOTE(Kelosky): technically, this may not be unique, but it's unlikely to be the case
-        const titleId = innerTestResult.title.replace(/\s+/g, "-").toLowerCase();
+        const titleId = innerTestResult.title
+            .replace(/\s+/g, "-")
+            .toLowerCase();
         const diffId = titleId + "-diff";
         thirdDiv.appendChild(strong);
 
         const small = document.createElement("small") as HTMLElement;
         small.classList.add("d-block", "text-right", "mt-3");
         const conversionValu = 1000;
-        small.textContent = innerTestResult.duration as any / conversionValu + "s";
+        small.textContent =
+            (innerTestResult.duration as any) / conversionValu + "s";
 
         thirdDiv.appendChild(small);
 
@@ -88,8 +112,11 @@ export class Test {
         secondDiv.appendChild(span);
 
         if (failed) {
+            console.log("innerTestResult", innerTestResult);
 
-            const failMessage: string = AnsiParser.removeAnsi(innerTestResult.failureMessages[0]);
+            const failMessage: string = AnsiParser.removeAnsi(
+                innerTestResult.failureMessages[0]
+            );
             const failMessageSplit = failMessage.split("\n");
 
             let show = true;
@@ -108,12 +135,21 @@ export class Test {
             }
 
             const collapseDiv = document.createElement("div") as HTMLDivElement;
-            collapseDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "w-100");
-            const worthlessDiv = document.createElement("div") as HTMLDivElement;
+            collapseDiv.classList.add(
+                "d-flex",
+                "justify-content-between",
+                "align-items-center",
+                "w-100"
+            );
+            const worthlessDiv = document.createElement(
+                "div"
+            ) as HTMLDivElement;
             secondDiv.appendChild(collapseDiv);
             collapseDiv.appendChild(worthlessDiv);
 
-            const button = document.createElement("button") as HTMLButtonElement;
+            const button = document.createElement(
+                "button"
+            ) as HTMLButtonElement;
             button.classList.add("btn", "btn-light", "btn-sm");
             button.type = "button";
             button.setAttribute("data-bs-toggle", "collapse");
@@ -134,9 +170,10 @@ export class Test {
             const code = document.createElement("code") as HTMLElement;
             pre.appendChild(code);
 
-
             failMessageSplit.forEach((entry, index) => {
-                const codeSpan = document.createElement("span") as HTMLSpanElement;
+                const codeSpan = document.createElement(
+                    "span"
+                ) as HTMLSpanElement;
                 if (entry[0] === "+") {
                     codeSpan.setAttribute("style", "color:" + Constants.PASS);
                     codeSpan.textContent = entry;
