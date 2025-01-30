@@ -6,10 +6,9 @@ export declare class Processor {
     private mResults;
     private mExplicitConfig?;
     private mProcessParms?;
-    private domSnapshot?;
-    static run(results: AggregatedResult, explicitConfig?: IJestStareConfig, parms?: IProcessParms, domSnapshot?: string): AggregatedResult;
+    static run(results: AggregatedResult, explicitConfig?: IJestStareConfig, parms?: IProcessParms): AggregatedResult;
     private mLog;
-    constructor(mResults: AggregatedResult, mExplicitConfig?: IJestStareConfig, mProcessParms?: IProcessParms, domSnapshot?: string);
+    constructor(mResults: AggregatedResult, mExplicitConfig?: IJestStareConfig, mProcessParms?: IProcessParms);
     private generate;
     private collectImageSnapshots;
     private generateReport;
