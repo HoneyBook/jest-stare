@@ -16,5 +16,6 @@ export interface IJestStareConfig {
     hideFailing?: boolean;
     hidePending?: boolean;
     hideTodo?: boolean;
+    domSnapshotsDir?: string;
 }
 export declare const PACKAGE_JSON_KEY = "jest-stare";
