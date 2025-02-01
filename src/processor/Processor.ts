@@ -73,7 +73,6 @@ export class Processor {
             throw new Error(Constants.NO_INPUT);
         }
 
-        const failedTests = [];
         this.mResults.testResults.forEach((testSuite) => {
             testSuite.testResults.forEach((test) => {
                 if (test.status === "failed") {
