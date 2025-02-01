@@ -7,8 +7,7 @@ import { EnvVarService } from "../utils/EnvVarService";
 import { Config } from "@jest/types";
 import { AggregatedResult, TestResult } from "@jest/test-result";
 import { Test, ReporterOnStartOptions } from "@jest/reporters";
-import * as fs from "fs";
-import * as path from "path";
+import { getDOMSnapshot } from "../utils/dom-utils";
 
 // import Test = jest.Test;
 // import ReporterOnStartOptions = Config.ReporterOnStartOptions;
@@ -213,21 +212,4 @@ export class Reporter {
         }
         return this.mLog;
     }
-}
-
-function getDOMSnapshot({ testPath, testFullName }) {
-    const fileName = testPath.split("/").pop();
-    const testId = `${fileName}__${testFullName}`;
-    const snapshotPath = path.join(__dirname, `${testId}.json`);
-
-    let data;
-    try {
-        data = JSON.parse(fs.readFileSync(snapshotPath, "utf8"));
-    } catch (e) {
-        console.error(
-            `[Jest Stare]: Error reading snapshot file: ${snapshotPath}`
-        );
-        return "";
-    }
-    return data?.domSnapshot || "";
 }
