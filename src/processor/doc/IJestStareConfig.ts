@@ -6,7 +6,6 @@ import { Constants } from "../Constants";
  * @interface IJestStareConfig
  */
 export interface IJestStareConfig {
-
     /**
      * The directory you would like the results to go to
      * @type {string}
@@ -27,7 +26,6 @@ export interface IJestStareConfig {
      * @memberof IJestStareConfig
      */
     resultHtml?: string;
-
 
     /**
      * The title of the generated report
@@ -87,7 +85,6 @@ export interface IJestStareConfig {
      */
     additionalResultsProcessors?: string[];
 
-
     /**
      * Set to false to supress creating HTML report
      * @type {boolean}
@@ -129,6 +126,8 @@ export interface IJestStareConfig {
      * @memberof IJestStareConfig
      */
     hideTodo?: boolean;
+
+    domSnapshotsDir?: string;
 }
 
 /**

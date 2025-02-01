@@ -77,6 +77,7 @@ export class Processor {
             testSuite.testResults.forEach((test) => {
                 if (test.status === "failed") {
                     test.domSnapshot = getDOMSnapshot({
+                        domSnapshotsDir: this.mExplicitConfig.domSnapshotsDir,
                         testPath: testSuite.testFilePath,
                         testFullName: test.fullName,
                     });
