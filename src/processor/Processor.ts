@@ -79,6 +79,13 @@ export class Processor {
         this.mResults.testResults.forEach((testSuite) => {
             testSuite.testResults.forEach((test) => {
                 if (test.status === "failed") {
+                    console.log(
+                        "[Jest Stare]: getDOMSnapshot args",
+                        this?.logger,
+                        this?.mExplicitConfig?.domSnapshotsDir,
+                        testSuite?.testFilePath,
+                        test?.fullName
+                    );
                     test.domSnapshot = getDOMSnapshot({
                         logger: this.logger,
                         domSnapshotsDir: this.mExplicitConfig.domSnapshotsDir,
