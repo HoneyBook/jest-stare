@@ -9,6 +9,9 @@ export function getDOMSnapshot({
 }) {
     const fileName = testPath.split("/").pop();
     const testId = `${fileName}__${testFullName}`;
+    console.log("[Jest Stare]: fileName:", fileName);
+    console.log("[Jest Stare]: testId:", testId);
+
     const snapshotPath = path.join(domSnapshotsDir, `${testId}.json`);
 
     console.log("[Jest Stare]: Reading snapshot file at path:", snapshotPath);
