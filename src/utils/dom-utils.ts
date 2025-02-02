@@ -12,7 +12,7 @@ export function getDOMSnapshot({
     const snapshotPath = path.join(domSnapshotsDir, `${testId}.json`);
 
     console.log("[Jest Stare]: Reading snapshot file at path:", snapshotPath);
-    logger.info("[Jest Stare]: Generating report...");
+    logger.info("[Jest Stare]: Reading snapshot file at path:", snapshotPath);
 
     let data;
     try {
