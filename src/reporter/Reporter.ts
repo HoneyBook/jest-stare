@@ -124,6 +124,7 @@ export class Reporter {
         );
         failedTests.forEach((failedTest) => {
             failedTest.domSnapshot = getDOMSnapshot({
+                logger: this.logger,
                 domSnapshotsDir: this.jestStareConfig.domSnapshotsDir,
                 testPath: test.path,
                 testFullName: failedTest.fullName,

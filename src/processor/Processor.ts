@@ -73,10 +73,14 @@ export class Processor {
             throw new Error(Constants.NO_INPUT);
         }
 
+        console.log("[Jest Stare]: Generating report...");
+        this.logger.info("[Jest Stare]: Generating report...");
+
         this.mResults.testResults.forEach((testSuite) => {
             testSuite.testResults.forEach((test) => {
                 if (test.status === "failed") {
                     test.domSnapshot = getDOMSnapshot({
+                        logger: this.logger,
                         domSnapshotsDir: this.mExplicitConfig.domSnapshotsDir,
                         testPath: testSuite.testFilePath,
                         testFullName: test.fullName,
