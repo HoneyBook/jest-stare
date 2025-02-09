@@ -1,5 +1,4 @@
-export declare function getDOMSnapshot({ logger, domSnapshotsDir, testPath, testFullName, }: {
-    logger: any;
+export declare function getDOMSnapshot({ domSnapshotsDir, testPath, testFullName }: {
     domSnapshotsDir: any;
     testPath: any;
     testFullName: any;
