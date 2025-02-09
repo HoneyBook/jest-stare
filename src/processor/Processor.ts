@@ -74,20 +74,11 @@ export class Processor {
         }
 
         console.log("[Jest Stare]: Generating report...");
-        this.logger.info("[Jest Stare]: Generating report...");
 
         this.mResults.testResults.forEach((testSuite) => {
             testSuite.testResults.forEach((test) => {
                 if (test.status === "failed") {
-                    console.log(
-                        "[Jest Stare]: getDOMSnapshot args",
-                        this?.logger,
-                        this?.mExplicitConfig?.domSnapshotsDir,
-                        testSuite?.testFilePath,
-                        test?.fullName
-                    );
                     test.domSnapshot = getDOMSnapshot({
-                        logger: this.logger,
                         domSnapshotsDir: this.mExplicitConfig.domSnapshotsDir,
                         testPath: testSuite.testFilePath,
                         testFullName: test.fullName,

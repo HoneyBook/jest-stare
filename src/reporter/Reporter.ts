@@ -7,7 +7,7 @@ import { EnvVarService } from "../utils/EnvVarService";
 import { Config } from "@jest/types";
 import { AggregatedResult, TestResult } from "@jest/test-result";
 import { Test, ReporterOnStartOptions } from "@jest/reporters";
-import { getDOMSnapshot } from "../utils/dom-utils";
+// import { getDOMSnapshot } from "../utils/dom-utils";
 
 // import Test = jest.Test;
 // import ReporterOnStartOptions = Config.ReporterOnStartOptions;
@@ -119,17 +119,17 @@ export class Reporter {
         testResult: TestResult,
         results: AggregatedResult
     ) {
-        const failedTests = testResult.testResults.filter(
-            (t) => t.status === "failed"
-        );
-        failedTests.forEach((failedTest) => {
-            failedTest.domSnapshot = getDOMSnapshot({
-                logger: this.logger,
-                domSnapshotsDir: this.jestStareConfig.domSnapshotsDir,
-                testPath: test.path,
-                testFullName: failedTest.fullName,
-            });
-        });
+        // NOTE: uncomment the following to enable DOM snapshotting in the report phase
+        // const failedTests = testResult.testResults.filter(
+        //     (t) => t.status === "failed"
+        // );
+        // failedTests.forEach((failedTest) => {
+        //     failedTest.domSnapshot = getDOMSnapshot({
+        //         domSnapshotsDir: this.jestStareConfig.domSnapshotsDir,
+        //         testPath: test.path,
+        //         testFullName: failedTest.fullName,
+        //     });
+        // });
 
         // disallow results processors from a reporter invocation
         if (
