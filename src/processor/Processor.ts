@@ -75,17 +75,20 @@ export class Processor {
 
         console.log("[Jest Stare]: Generating report...");
 
-        this.mResults.testResults.forEach((testSuite) => {
-            testSuite.testResults.forEach((test) => {
-                if (test.status === "failed") {
-                    test.domSnapshot = getDOMSnapshot({
-                        domSnapshotsDir: this.mExplicitConfig.domSnapshotsDir,
-                        testPath: testSuite.testFilePath,
-                        testFullName: test.fullName,
-                    });
-                }
+        if (this.mExplicitConfig.domSnapshotsDir) {
+            this.mResults.testResults.forEach((testSuite) => {
+                testSuite.testResults.forEach((test) => {
+                    if (test.status === "failed") {
+                        test.domSnapshot = getDOMSnapshot({
+                            domSnapshotsDir:
+                                this.mExplicitConfig.domSnapshotsDir,
+                            testPath: testSuite.testFilePath,
+                            testFullName: test.fullName,
+                        });
+                    }
+                });
             });
-        });
+        }
 
         const config = new Config(
             this.logger,
