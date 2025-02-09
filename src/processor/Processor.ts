@@ -73,8 +73,6 @@ export class Processor {
             throw new Error(Constants.NO_INPUT);
         }
 
-        console.log("[Jest Stare]: Generating report...");
-
         if (this.mExplicitConfig.domSnapshotsDir) {
             this.mResults.testResults.forEach((testSuite) => {
                 testSuite.testResults.forEach((test) => {
