@@ -1,6 +1,10 @@
 import { Constants } from "../Constants";
 import { Test } from "../tests/Test";
-import { AggregatedResult, AssertionResult, TestResult } from "@jest/test-result";
+import {
+    AggregatedResult,
+    AssertionResult,
+    TestResult,
+} from "@jest/test-result";
 
 /**
  * Create test suites
@@ -8,7 +12,6 @@ import { AggregatedResult, AssertionResult, TestResult } from "@jest/test-result
  * @class TestSuite
  */
 export class TestSuite {
-
     /**
      * Ancestor title join character
      * @static
@@ -26,7 +29,6 @@ export class TestSuite {
         const elements: HTMLElement[] = [];
 
         results.testResults.forEach((testResult) => {
-
             // NOTE(Kelosky): jest.AggregateResult has a testResults array
             // which contains a jest.TestResults array.  jest.TestResults array
             // is of type AssertionResults array.  however, it looks like they
@@ -38,16 +40,27 @@ export class TestSuite {
                 console.error("Unexpected testResults field missing");
                 if ((testResult as any).assertionResults != null) {
                     // tslint:disable-next-line:no-console
-                    console.warn("Attempting to use assertionResults: results are unpredictable");
-                    testResult.testResults = (testResult as any).assertionResults;
+                    console.warn(
+                        "Attempting to use assertionResults: results are unpredictable"
+                    );
+                    testResult.testResults = (
+                        testResult as any
+                    ).assertionResults;
                 }
             }
 
             let testStatusClass;
 
-            const testSectionStatus: Map<string, string> = new Map<string, string>();
+            const testSectionStatus: Map<string, string> = new Map<
+                string,
+                string
+            >();
             for (const result of testResult.testResults) {
-                testStatusClass = TestSuite.asignStatus(testStatusClass, result, testSectionStatus);
+                testStatusClass = TestSuite.asignStatus(
+                    testStatusClass,
+                    result,
+                    testSectionStatus
+                );
             }
 
             if (testStatusClass === undefined) {
@@ -55,30 +68,53 @@ export class TestSuite {
             }
 
             // Using Bootstrap Accordion to allow for expanding and collapsing sections by testFilePath
-            const accordionCard = TestSuite.buildAccordionCard(testResult, testStatusClass)
+            const accordionCard = TestSuite.buildAccordionCard(
+                testResult,
+                testStatusClass
+            );
 
             // if a flat test report were to be used, simply
             // testResult.testResults.forEach((test) => {
             //   div.appendChild(Test.create(test));
             // });
 
-            const divMap: Map<string, HTMLElement> = new Map<string, HTMLElement>();
+            const divMap: Map<string, HTMLElement> = new Map<
+                string,
+                HTMLElement
+            >();
             testResult.testResults.forEach((test) => {
                 const element = Test.create(test);
                 if (test.ancestorTitles.length > 0) {
                     test.ancestorTitles.forEach((title, index) => {
-
                         const titlesCopy = test.ancestorTitles.slice();
                         titlesCopy.splice(index + 1);
                         const key = titlesCopy.join(TestSuite.JOIN_CHAR);
                         if (divMap.has(key)) {
                             divMap.get(key).appendChild(element);
                         } else {
-                            const nestDiv = document.createElement("div") as HTMLDivElement;
-                            const statusClass = testSectionStatus.get(key) || Constants.PASSED_TEST;
-                            nestDiv.classList.add("my-3", "p-3", "bg-white", "rounded", "box-shadow", statusClass);
-                            const h6 = document.createElement("h6") as HTMLHeadingElement;
-                            h6.classList.add("border-bottom", "pb-2", "mb-0", "display-6");
+                            const nestDiv = document.createElement(
+                                "div"
+                            ) as HTMLDivElement;
+                            const statusClass =
+                                testSectionStatus.get(key) ||
+                                Constants.PASSED_TEST;
+                            nestDiv.classList.add(
+                                "my-3",
+                                "p-3",
+                                "bg-white",
+                                "rounded",
+                                "box-shadow",
+                                statusClass
+                            );
+                            const h6 = document.createElement(
+                                "h6"
+                            ) as HTMLHeadingElement;
+                            h6.classList.add(
+                                "border-bottom",
+                                "pb-2",
+                                "mb-0",
+                                "display-6"
+                            );
                             h6.textContent = title;
                             nestDiv.appendChild(h6);
                             nestDiv.appendChild(element);
@@ -87,16 +123,22 @@ export class TestSuite {
                             divMap.set(key, nestDiv);
 
                             if (index === 0) {
-                                accordionCard.querySelector('.card-body').appendChild(nestDiv);
+                                accordionCard
+                                    .querySelector(".card-body")
+                                    .appendChild(nestDiv);
                             } else {
                                 titlesCopy.pop();
-                                const parentKey = titlesCopy.join(TestSuite.JOIN_CHAR);
+                                const parentKey = titlesCopy.join(
+                                    TestSuite.JOIN_CHAR
+                                );
                                 divMap.get(parentKey).appendChild(nestDiv);
                             }
                         }
                     });
                 } else {
-                    accordionCard.querySelector('.card-body').appendChild(element);
+                    accordionCard
+                        .querySelector(".card-body")
+                        .appendChild(element);
                 }
             });
 
@@ -106,12 +148,21 @@ export class TestSuite {
         return elements;
     }
 
-    public static asignStatus(testStatusClass: string, result: AssertionResult, testSectionStatus: Map<string, string>) {
-        const currentStatus = TestSuite.getStatusClassFromJestStatus(result.status);
+    public static asignStatus(
+        testStatusClass: string,
+        result: AssertionResult,
+        testSectionStatus: Map<string, string>
+    ) {
+        const currentStatus = TestSuite.getStatusClassFromJestStatus(
+            result.status
+        );
         if (!testStatusClass) {
             testStatusClass = currentStatus;
         } else if (testStatusClass !== currentStatus) {
-            testStatusClass = TestSuite.mixStatus(currentStatus, testStatusClass);
+            testStatusClass = TestSuite.mixStatus(
+                currentStatus,
+                testStatusClass
+            );
         } else {
             testStatusClass = currentStatus;
         }
@@ -122,7 +173,10 @@ export class TestSuite {
             const key = titlesCopy.join(TestSuite.JOIN_CHAR);
             if (testSectionStatus.has(key)) {
                 if (testStatusClass !== currentStatus) {
-                    testSectionStatus.set(key, TestSuite.mixStatus(currentStatus, testStatusClass));
+                    testSectionStatus.set(
+                        key,
+                        TestSuite.mixStatus(currentStatus, testStatusClass)
+                    );
                 } else {
                     testSectionStatus.set(key, currentStatus);
                 }
@@ -150,24 +204,48 @@ export class TestSuite {
         return sortedUniqueStatusArray.join(TestSuite.JOIN_CHAR);
     }
 
-    private static buildAccordionCard(testResult: TestResult, testStatusClass: string) {
+    private static buildAccordionCard(
+        testResult: TestResult,
+        testStatusClass: string
+    ) {
         // Following the Bootstrap Accordion Example https://getbootstrap.com/docs/4.0/components/collapse/
         // each spec/test file will have it's own card in the accordion
         const accordionCard = document.createElement("div") as HTMLDivElement;
-        accordionCard.classList.add("my-3", "p-3", "bg-white", "rounded", "box-shadow", "card", testStatusClass);
+        accordionCard.classList.add(
+            "my-3",
+            "p-3",
+            "bg-white",
+            "rounded",
+            "box-shadow",
+            "card",
+            testStatusClass
+        );
 
         const cardHeader = TestSuite.buildAccordionCardHeader(
-            testResult.testFilePath, testResult.numPassingTests, testResult.numFailingTests, testResult.numPendingTests, testResult.numTodoTests);
+            testResult.testFilePath,
+            testResult.numPassingTests,
+            testResult.numFailingTests,
+            testResult.numPendingTests,
+            testResult.numTodoTests
+        );
         accordionCard.appendChild(cardHeader);
 
-        const cardBody = TestSuite.buildAccordionCardBody(testResult.testFilePath);
-        accordionCard.appendChild(cardBody)
+        const cardBody = TestSuite.buildAccordionCardBody(
+            testResult.testFilePath
+        );
+        accordionCard.appendChild(cardBody);
 
-        return accordionCard
+        return accordionCard;
     }
 
-    private static buildAccordionCardHeader(testFilePath: string, passCount: number, failCount: number, pendingCount: number, todoCount: number) {
-        const fileName = TestSuite.sanitizeFilePath(testFilePath)
+    private static buildAccordionCardHeader(
+        testFilePath: string,
+        passCount: number,
+        failCount: number,
+        pendingCount: number,
+        todoCount: number
+    ) {
+        const fileName = TestSuite.sanitizeFilePath(testFilePath);
         const cardHeader = document.createElement("div") as HTMLDivElement;
         cardHeader.classList.add("card-header");
         cardHeader.classList.add("text-center");
@@ -177,12 +255,14 @@ export class TestSuite {
         h5.classList.add("border-bottom", "pb-2", "mb-0", "display-5");
 
         const btn = document.createElement("button") as HTMLButtonElement;
+        btn.style.userSelect = "text";
         btn.classList.add("btn", "btn-block");
         btn.setAttribute("data-bs-toggle", "collapse");
         btn.setAttribute("data-bs-target", `#${fileName}_detail`);
         btn.textContent = testFilePath;
 
         const resultCounts = document.createElement("div") as HTMLDivElement;
+        resultCounts.style.userSelect = "none";
         const passBadge = document.createElement("span") as HTMLSpanElement;
         passBadge.classList.add("badge", "bg-success", "border");
         passBadge.textContent = passCount.toString();
@@ -211,7 +291,7 @@ export class TestSuite {
     }
 
     private static buildAccordionCardBody(testFilePath: string) {
-        const fileName = TestSuite.sanitizeFilePath(testFilePath)
+        const fileName = TestSuite.sanitizeFilePath(testFilePath);
         const cardContainer = document.createElement("div") as HTMLDivElement;
         cardContainer.classList.add("collapse");
         cardContainer.setAttribute("data-parent", "#accordion");
@@ -231,7 +311,6 @@ export class TestSuite {
      * @returns {String}
      */
     private static sanitizeFilePath(testFilePath: string) {
-        return testFilePath.replace(/(\/)|\\|(:)|(\s)|\.|(@)/g, '_')
+        return testFilePath.replace(/(\/)|\\|(:)|(\s)|\.|(@)/g, "_");
     }
-
 }
