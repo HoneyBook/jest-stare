@@ -168,13 +168,15 @@ export class Test {
             const code = document.createElement("code") as HTMLElement;
             pre.appendChild(code);
 
-            const iframe = createIframeForDOMSnapshot(
-                innerTestResult.domSnapshot
-            );
-            const iframeVisibilityCheckbox =
-                createIframeVisibilityCheckbox(iframe);
-            secondDiv.appendChild(iframeVisibilityCheckbox);
-            secondDiv.appendChild(iframe);
+            if (innerTestResult.domSnapshot) {
+                const iframe = createIframeForDOMSnapshot(
+                    innerTestResult.domSnapshot
+                );
+                const iframeVisibilityCheckbox =
+                    createIframeVisibilityCheckbox(iframe);
+                secondDiv.appendChild(iframeVisibilityCheckbox);
+                secondDiv.appendChild(iframe);
+            }
 
             failMessageSplit.forEach((entry, index) => {
                 const codeSpan = document.createElement(
