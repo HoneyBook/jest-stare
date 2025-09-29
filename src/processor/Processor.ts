@@ -8,7 +8,7 @@ import { Logger } from "../utils/Logger";
 import * as chalk from "chalk";
 import { IThirdPartyDependency } from "./doc/IThirdPartyDependency";
 import { Dependencies } from "./Dependencies";
- 
+
 import { IProcessParms } from "./doc/IProcessParms";
 import { Config } from "./Config";
 import { ImageSnapshotDifference } from "../render/diff/ImageSnapshotDifference";

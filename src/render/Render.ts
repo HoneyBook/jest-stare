@@ -7,7 +7,7 @@ import { TestSuite } from "./suites/TestSuite";
 import { TestSummary } from "./summary/TestSummary";
 import { IChartData } from "./doc/IChartData";
 import { IJestStareConfig } from "../processor/doc/IJestStareConfig";
- 
+
 import { AggregatedResult } from "@jest/test-result";
 import { Config } from "@jest/types";
 

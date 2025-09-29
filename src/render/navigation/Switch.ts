@@ -1,4 +1,4 @@
- 
+
 
 /**
  * Associates a switch (checkbox) to a class to show if checked or hide if unchecked)
