@@ -1,4 +1,4 @@
-import { format, isNullOrUndefined } from "util";
+import { format } from "util";
 import * as moment from "moment";
 import * as chalk from "chalk";
 
@@ -30,7 +30,7 @@ export class Logger {
      * @memberof Logger
      */
     public static get get() {
-        if (isNullOrUndefined(this.mLog)) {
+        if (this.mLog == null) {
             this.mLog = new Logger();
         }
         return this.mLog;
@@ -333,7 +333,7 @@ export class Logger {
         let formatted = data;
         // TODO(Kelosky): this is not ideal, but works for simple cases of
         // .debug(%s, "sub string").
-        if (this.formatEnabled && !isNullOrUndefined(args) && args.length > 0) {
+        if (this.formatEnabled && args != null && args.length > 0) {
             let defined = false;
             args.forEach((arg) => {
                 arg.forEach((ntry: string[]) => {

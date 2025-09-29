@@ -1,4 +1,4 @@
-import { isNullOrUndefined } from "util";
+ 
 
 /**
  * Associates a switch (checkbox) to a class to show if checked or hide if unchecked)
@@ -60,7 +60,7 @@ export class Switch {
             checkBox.change(() => {
                 if (checkBox.is(":checked")) {
                     divClass.show();
-                    if (!isNullOrUndefined(addtnlCheckBoxArray)) {
+                    if (addtnlCheckBoxArray != null) {
                         addtnlCheckBoxArray.forEach((addtnlCheckBox, index) => {
                             const mixedDualClass = Switch.mixStatus(addtnlClassNameArray[index], divClassName);
                             const mixedClassDiv = $("." + mixedDualClass) as JQuery<HTMLDivElement>;
@@ -74,7 +74,7 @@ export class Switch {
                     }
                 } else {
                     divClass.hide();
-                    if (!isNullOrUndefined(addtnlCheckBoxArray)) {
+                    if (addtnlCheckBoxArray != null) {
                         let allUnchecked = true;
                         addtnlCheckBoxArray.forEach((addtnlCheckBox, index) => {
                             if (!addtnlCheckBox.is(":checked")) {
