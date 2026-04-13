@@ -77,6 +77,7 @@ export class Processor {
             this.mResults.testResults.forEach((testSuite) => {
                 testSuite.testResults.forEach((test) => {
                     if (test.status === "failed") {
+                        // @ts-expect-error
                         test.domSnapshot = getDOMSnapshot({
                             domSnapshotsDir:
                                 this.mExplicitConfig.domSnapshotsDir,

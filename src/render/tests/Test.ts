@@ -168,8 +168,10 @@ export class Test {
             const code = document.createElement("code") as HTMLElement;
             pre.appendChild(code);
 
+            // @ts-expect-error
             if (innerTestResult.domSnapshot) {
                 const iframe = createIframeForDOMSnapshot(
+                    // @ts-expect-error
                     innerTestResult.domSnapshot
                 );
                 const iframeVisibilityCheckbox =
