@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from "util";
 import { Constants } from "./Constants";
 import { IJestStareConfig, PACKAGE_JSON_KEY } from "./doc/IJestStareConfig";
 import { EnvVars } from "./EnvVars";
@@ -40,7 +39,7 @@ export class Config {
         // take packagejson options after setting explicit config (concatenate both)
         if (this.mExplicitConfig != null) {
             Object.keys(mergedEnvAndPackageJsonConfig).forEach((key) => {
-                if (isNullOrUndefined(this.mExplicitConfig[key]) && !isNullOrUndefined(mergedEnvAndPackageJsonConfig[key])) {
+                if (this.mExplicitConfig[key] == null && mergedEnvAndPackageJsonConfig[key] != null) {
                     config[key] = mergedEnvAndPackageJsonConfig[key];
                 }
             });
@@ -57,13 +56,13 @@ export class Config {
 
         // suppress logging if requested
         // NOTE(Kelosky): must be first, to suppress all logging
-        if (!isNullOrUndefined(config.log)) {
+        if (config.log != null) {
             this.mLogger.on = config.log;
         }
 
         // record if we were invoked programmatically
         // NOTE(Kelosky): should be second, to record if override config
-        if (!isNullOrUndefined(this.mExplicitConfig)) {
+        if (this.mExplicitConfig != null) {
 
             // display if not internal invocation
             if (this.mProcessParms && this.mProcessParms.reporter) {
@@ -73,7 +72,7 @@ export class Config {
             }
         }
 
-        if (isNullOrUndefined(config.resultHtml)) {
+        if (config.resultHtml == null) {
             this.mLogger.debug("Setting to default resultHtml");
             config.resultHtml = Constants.MAIN_HTML;
         } else {
@@ -83,7 +82,7 @@ export class Config {
             }
         }
 
-        if (isNullOrUndefined(config.resultJson)) {
+        if (config.resultJson == null) {
             config.resultJson = Constants.RESULTS_RAW;
         }
 

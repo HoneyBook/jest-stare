@@ -7,7 +7,7 @@ import { TestSuite } from "./suites/TestSuite";
 import { TestSummary } from "./summary/TestSummary";
 import { IChartData } from "./doc/IChartData";
 import { IJestStareConfig } from "../processor/doc/IJestStareConfig";
-import { isNullOrUndefined } from "util";
+
 import { AggregatedResult } from "@jest/test-result";
 import { Config } from "@jest/types";
 
@@ -206,7 +206,7 @@ export class Render {
      * @memberof Render
      */
     private static setReportTitle(config: IJestStareConfig) {
-        const tabTitle = !isNullOrUndefined(config.reportTitle) ? config.reportTitle : "jest-stare!";
+        const tabTitle = config.reportTitle != null ? config.reportTitle : "jest-stare!";
         document.title = tabTitle;
     }
 
@@ -218,7 +218,7 @@ export class Render {
      * @memberof Render
      */
     private static setReportHeadline(config: IJestStareConfig) {
-        const brandTitle =  !isNullOrUndefined(config.reportHeadline) ? config.reportHeadline : "jest-stare";
+        const brandTitle =  config.reportHeadline != null ? config.reportHeadline : "jest-stare";
         const a = $("#navbar-title");
         a.text(brandTitle);
     }
@@ -231,7 +231,7 @@ export class Render {
      * @memberof Render
      */
     private static setCoverageLink(config: IJestStareConfig) {
-        if (!isNullOrUndefined(config.coverageLink)) {
+        if (config.coverageLink != null) {
             const a = $("#coverage-link");
             a.addClass("active");
             a.removeClass("disabled");
