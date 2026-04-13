@@ -10,7 +10,6 @@ import { TestResult } from "@jest/types";
  * @class Test
  */
 export class Test {
-
     /**
      * Add test to a section of the presented table
      * @static
@@ -19,7 +18,9 @@ export class Test {
      * @returns {HTMLDivElement} - populated element
      * @memberof Test
      */
-    public static create(innerTestResult: TestResult.AssertionResult): HTMLElement {
+    public static create(
+        innerTestResult: TestResult.AssertionResult
+    ): HTMLElement {
         let color = Constants.PASS_RAW;
         let testStatusClass = Constants.PASSED_TEST;
         let failed = false;
@@ -51,17 +52,37 @@ export class Test {
         img.classList.add("mr-2", "rounded");
         img.alt = "";
 
-        img.setAttribute("data-src", "holder.js/32x32?theme=thumb&bg=" + color + "&fg=" + color + "&size=1");
+        img.setAttribute(
+            "data-src",
+            "holder.js/32x32?theme=thumb&bg=" +
+                color +
+                "&fg=" +
+                color +
+                "&size=1"
+        );
 
         firstDiv.appendChild(img);
 
         const secondDiv = document.createElement("div") as HTMLDivElement;
-        secondDiv.classList.add("media-body", "pb-3", "mb-0", "small", "lh-125", "border-bottom", "overflow-auto");
+        secondDiv.classList.add(
+            "media-body",
+            "pb-3",
+            "mb-0",
+            "small",
+            "lh-125",
+            "border-bottom",
+            "overflow-auto"
+        );
 
         firstDiv.appendChild(secondDiv);
 
         const thirdDiv = document.createElement("div") as HTMLDivElement;
-        thirdDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "w-100");
+        thirdDiv.classList.add(
+            "d-flex",
+            "justify-content-between",
+            "align-items-center",
+            "w-100"
+        );
 
         secondDiv.appendChild(thirdDiv);
 
@@ -70,14 +91,17 @@ export class Test {
         strong.textContent = innerTestResult.title;
 
         // NOTE(Kelosky): technically, this may not be unique, but it's unlikely to be the case
-        const titleId = innerTestResult.title.replace(/\s+/g, "-").toLowerCase();
+        const titleId = innerTestResult.title
+            .replace(/\s+/g, "-")
+            .toLowerCase();
         const diffId = titleId + "-diff";
         thirdDiv.appendChild(strong);
 
         const small = document.createElement("small") as HTMLElement;
         small.classList.add("d-block", "text-right", "mt-3");
         const conversionValu = 1000;
-        small.textContent = innerTestResult.duration as any / conversionValu + "s";
+        small.textContent =
+            (innerTestResult.duration as any) / conversionValu + "s";
 
         thirdDiv.appendChild(small);
 
@@ -88,8 +112,9 @@ export class Test {
         secondDiv.appendChild(span);
 
         if (failed) {
-
-            const failMessage: string = AnsiParser.removeAnsi(innerTestResult.failureMessages[0]);
+            const failMessage: string = AnsiParser.removeAnsi(
+                innerTestResult.failureMessages[0]
+            );
             const failMessageSplit = failMessage.split("\n");
 
             let show = true;
@@ -108,12 +133,21 @@ export class Test {
             }
 
             const collapseDiv = document.createElement("div") as HTMLDivElement;
-            collapseDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "w-100");
-            const worthlessDiv = document.createElement("div") as HTMLDivElement;
+            collapseDiv.classList.add(
+                "d-flex",
+                "justify-content-between",
+                "align-items-center",
+                "w-100"
+            );
+            const worthlessDiv = document.createElement(
+                "div"
+            ) as HTMLDivElement;
             secondDiv.appendChild(collapseDiv);
             collapseDiv.appendChild(worthlessDiv);
 
-            const button = document.createElement("button") as HTMLButtonElement;
+            const button = document.createElement(
+                "button"
+            ) as HTMLButtonElement;
             button.classList.add("btn", "btn-light", "btn-sm");
             button.type = "button";
             button.setAttribute("data-bs-toggle", "collapse");
@@ -134,9 +168,22 @@ export class Test {
             const code = document.createElement("code") as HTMLElement;
             pre.appendChild(code);
 
+            // @ts-expect-error
+            if (innerTestResult.domSnapshot) {
+                const iframe = createIframeForDOMSnapshot(
+                    // @ts-expect-error
+                    innerTestResult.domSnapshot
+                );
+                const iframeVisibilityCheckbox =
+                    createIframeVisibilityCheckbox(iframe);
+                secondDiv.appendChild(iframeVisibilityCheckbox);
+                secondDiv.appendChild(iframe);
+            }
 
             failMessageSplit.forEach((entry, index) => {
-                const codeSpan = document.createElement("span") as HTMLSpanElement;
+                const codeSpan = document.createElement(
+                    "span"
+                ) as HTMLSpanElement;
                 if (entry[0] === "+") {
                     codeSpan.setAttribute("style", "color:" + Constants.PASS);
                     codeSpan.textContent = entry;
@@ -156,4 +203,61 @@ export class Test {
 
         return firstDiv;
     }
+}
+
+function createIframeForDOMSnapshot(content: string) {
+    const iframe = document.createElement("iframe");
+
+    Object.assign(iframe.style, {
+        width: "100%",
+        height: "1100px",
+        border: "1px solid black",
+    });
+
+    iframe.onload = () => {
+        const doc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (doc) {
+            doc.open();
+            doc.write(content);
+            doc.close();
+        }
+    };
+
+    return iframe;
+}
+
+function createIframeVisibilityCheckbox(iframe) {
+    const checkboxId = `iframe-visibility"_${Math.random()
+        .toString(36)
+        .substring(7)}`;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = checkboxId;
+    checkbox.checked = true;
+    checkbox.addEventListener("change", (event) => {
+        const checked = (event.target as HTMLInputElement).checked;
+        iframe.style.display = checked ? "" : "none";
+    });
+    Object.assign(checkbox.style, {
+        cursor: "pointer",
+    });
+
+    const label = document.createElement("label");
+    label.htmlFor = checkboxId;
+    label.textContent = "Show DOM Snapshot";
+    Object.assign(label.style, {
+        cursor: "pointer",
+    });
+
+    const container = document.createElement("div");
+    container.appendChild(checkbox);
+    container.appendChild(label);
+    Object.assign(container.style, {
+        display: "flex",
+        gap: "4px",
+        marginBottom: "6px",
+    });
+
+    return container;
 }

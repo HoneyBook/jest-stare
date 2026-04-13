@@ -1,11 +1,11 @@
 {
-  "name": "jest-stare",
+  "name": "@honeybook/jest-stare",
   "version": "2.5.4",
   "description": "jest html reporter (results processor) to view HTML jest results, save raw JSON, and invoke multiple reporters",
   "license": "MIT",
-  "repository": "https://github.com/dkelosky/jest-stare",
+  "repository": "https://github.com/honeybook/jest-stare",
   "author": {
-    "name": "dan kelosky",
+    "name": "honeybook",
     "email": "",
     "url": ""
   },
