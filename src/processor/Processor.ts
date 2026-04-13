@@ -8,7 +8,7 @@ import { Logger } from "../utils/Logger";
 import * as chalk from "chalk";
 import { IThirdPartyDependency } from "./doc/IThirdPartyDependency";
 import { Dependencies } from "./Dependencies";
-import { isNullOrUndefined } from "util";
+
 import { IProcessParms } from "./doc/IProcessParms";
 import { Config } from "./Config";
 import { ImageSnapshotDifference } from "../render/diff/ImageSnapshotDifference";
@@ -69,7 +69,7 @@ export class Processor {
         const substitute: ISubstitute = {};
 
         // throw error if no input object
-        if (isNullOrUndefined(this.mResults)) {
+        if (this.mResults == null) {
             throw new Error(Constants.NO_INPUT);
         }
 
@@ -361,7 +361,7 @@ export class Processor {
      * @memberof Processor
      */
     get logger() {
-        if (isNullOrUndefined(this.mLog)) {
+        if (this.mLog == null) {
             this.logger = new Logger();
         }
         // console.log((this.mLog as any).writeStdout)
